@@ -1,0 +1,31 @@
+[
+  {
+    "id": "1",
+    "email": "student@school.edu",
+    "password": "password123",
+    "name": "John Student",
+    "role": "student"
+  },
+  {
+    "id": "2",
+    "email": "instructor@school.edu",
+    "password": "password123",
+    "name": "Dr. Jane Instructor",
+    "role": "instructor"
+  },
+  {
+    "id": "3",
+    "email": "president@school.edu",
+    "password": "password123",
+    "name": "Prof. Bob President",
+    "role": "president"
+  },
+  {
+    "id": "4",
+    "email": "staff@school.edu",
+    "password": "password123",
+    "name": "Alice Staff",
+    "role": "staff"
+  }
+]
+
