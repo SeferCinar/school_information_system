@@ -14,7 +14,8 @@ const StudentSchema = new Schema({
   lecture_catalog: { type: [String], default: [] }, 
   state: { type: String, default: "Active" }
 }, { 
-  versionKey: false 
+  versionKey: false,
+  collection: 'Student'
 });
 const Student = models.Student || model('Student', StudentSchema, 'Student');
 export default Student;

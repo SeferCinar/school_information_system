@@ -10,7 +10,9 @@ const LecturerSchema = new Schema({
   department: { type: String },
   is_head: { type: Boolean, default: false },
   lecture_catalog: { type: [String], default: [] }
-}, { versionKey: false });
+}, { versionKey: false,
+    collection: 'Lecturer'
+ });
 
 const Lecturer = models.Lecturer || model('Lecturer', LecturerSchema, 'Lecturer');
 
