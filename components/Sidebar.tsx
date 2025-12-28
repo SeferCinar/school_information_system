@@ -13,6 +13,7 @@ type MenuItem = {
 const MENU_ITEMS: MenuItem[] = [
   { label: 'Dashboard', href: '/dashboard', roles: ['student', 'instructor', 'president', 'staff'] },
   { label: 'My Courses', href: '/dashboard/courses', roles: ['student', 'instructor'] },
+  { label: 'Course Selection', href: '/dashboard/course-selection', roles: ['student'] },
   { label: 'Manage Courses', href: '/dashboard/manage-courses', roles: ['president', 'instructor'] },
   { label: 'Students', href: '/dashboard/students', roles: ['instructor', 'president', 'staff'] },
   { label: 'Profile', href: '/dashboard/profile', roles: ['student', 'instructor', 'president', 'staff'] },

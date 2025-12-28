@@ -1,18 +1,24 @@
 "use client";
 
 import RoleBasedRoute from '@/components/RoleBasedRoute';
+import CourseList from '@/components/CourseList';
+import AddCourseForm from '@/components/AddCourseForm';
 
 export default function ManageCoursesPage() {
   return (
     <RoleBasedRoute allowedRoles={['president', 'instructor']}>
-      <div>
-        <h1 className="text-2xl font-bold mb-4 text-gray-800">Manage Courses</h1>
-        <p className="text-gray-600">Only President and Instructors can see this page.</p>
-        <div className="mt-4 p-4 border border-dashed border-gray-400 rounded">
-          Course management content goes here...
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Manage Courses</h1>
+          <p className="text-gray-600">View and manage course offerings.</p>
+        </div>
+        
+        <CourseList />
+        
+        <div className="border-t pt-8">
+           <AddCourseForm />
         </div>
       </div>
     </RoleBasedRoute>
   );
 }
-
