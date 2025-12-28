@@ -12,6 +12,7 @@ const StudentSchema = new Schema({
   gpa: { type: Number, default: 0 },
   department: { type: String },
   lecture_catalog: { type: [String], default: [] }, 
+  enrolledCourses: { type: [String], default: [] },
   state: { type: String, default: "Active" }
 }, { 
   versionKey: false 
