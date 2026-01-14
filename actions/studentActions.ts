@@ -86,3 +86,8 @@ export async function enrollStudent(studentId: string, courseCodes: string[]) {
   }
 }
 
+export async function getAllStudents() {
+  await connectDB();
+  const students = await Student.find({}).lean();
+  return students.map((s: any) => ({ ...s, _id: s._id.toString() }));
+}

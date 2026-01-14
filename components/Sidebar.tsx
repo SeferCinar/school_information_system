@@ -15,6 +15,8 @@ const MENU_ITEMS: MenuItem[] = [
   { label: 'My Courses', href: '/dashboard/courses', roles: ['student', 'instructor'] },
   { label: 'Course Selection', href: '/dashboard/course-selection', roles: ['student'] },
   { label: 'Manage Courses', href: '/dashboard/manage-courses', roles: ['president', 'instructor'] },
+  { label: 'Exam Creation', href: '/dashboard/exams', roles: ['instructor', 'president'] },
+  { label: 'My Exams', href: '/dashboard/exams-list', roles: ['student', 'instructor', 'president'] },
   { label: 'Students', href: '/dashboard/students', roles: ['instructor', 'president', 'staff'] },
   { label: 'Profile', href: '/dashboard/profile', roles: ['student', 'instructor', 'president', 'staff'] },
 ];

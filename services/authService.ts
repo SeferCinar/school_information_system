@@ -79,7 +79,8 @@ export const loginUser = async (
       if (student) {
         name = student.name_surname || "Student";
       }
-    } else if (user.role === 'instructor' || user.role === 'president') {
+    } else if (user.role === 'instructor' || user.role === 'president' || user.role === 'lecturer') {
+      // Some databases might store teaching staff as 'lecturer' instead of 'instructor'
       const lecturerCollection = db.collection('Lecturer');
       const lecturer = await lecturerCollection.findOne({ _id: user.ref_id });
       name = lecturer?.name_surname || "Lecturer";
@@ -89,12 +90,31 @@ export const loginUser = async (
       name = staff?.name_surname || "Staff";
     }
 
-    // 8. Create user object
+    // 8. Normalize role to app Role union and create user object
+    const rawRole = (user.role || '').toString().toLowerCase();
+    let mappedRole: Role;
+    switch (rawRole) {
+      case 'student':
+      case 'instructor':
+      case 'president':
+      case 'staff':
+        mappedRole = rawRole as Role;
+        break;
+      case 'lecturer':
+        // Treat 'lecturer' from DB as 'instructor' in the app
+        mappedRole = 'instructor';
+        break;
+      default:
+        // Fallback to staff so user still has minimal access instead of breaking
+        mappedRole = 'staff';
+        break;
+    }
+
     const userObj: User = {
       id: user._id.toString(),
       email: user.email,
       name: name,
-      role: user.role as Role,
+      role: mappedRole,
       ref_id: user.ref_id
     };
 
