@@ -1,6 +1,6 @@
 'use server'
 
-import { connectDB } from '@/lib/mongodb_ts';
+import { connectDB } from '@/lib/mongodb';
 import Lecture from '@/models/Lecture';
 import { revalidatePath } from 'next/cache';
 

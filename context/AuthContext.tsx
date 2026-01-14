@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../types';
-import { loginUser } from '../services/authService';
+import { loginAction } from '../actions/authActions';
 import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
@@ -30,15 +30,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const loggedInUser = await loginUser(email, password);
+      const loggedInUser = await loginAction(email, password);
+      
       if (loggedInUser) {
         setUser(loggedInUser);
-        localStorage.setItem('user', JSON.stringify(loggedInUser));
+        localStorage.setItem("user", JSON.stringify(loggedInUser));
+        
+        // Redirect to dashboard
+        router.push('/dashboard');
         return true;
+      } else {
+        return false;
       }
-      return false;
     } catch (error) {
-      console.error("Login error", error);
+      console.error("Login error:", error);
       return false;
     }
   };
@@ -63,4 +68,3 @@ export const useAuth = () => {
   }
   return context;
 };
-
