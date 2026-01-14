@@ -17,8 +17,13 @@ const MENU_ITEMS: MenuItem[] = [
   { label: 'Manage Courses', href: '/dashboard/manage-courses', roles: ['president', 'instructor'] },
   { label: 'Exam Creation', href: '/dashboard/exams', roles: ['instructor', 'president'] },
   { label: 'My Exams', href: '/dashboard/exams-list', roles: ['student', 'instructor', 'president'] },
+  { label: 'Grade Entry', href: '/dashboard/grades', roles: ['instructor', 'president'] },
+  { label: 'Edit Grades', href: '/dashboard/edit-grades', roles: ['president'] },
+  { label: 'Transcript', href: '/dashboard/transcript', roles: ['student'] },
+  { label: 'Schedule', href: '/dashboard/schedule', roles: ['student'] },
   { label: 'Students', href: '/dashboard/students', roles: ['instructor', 'president', 'staff'] },
   { label: 'Profile', href: '/dashboard/profile', roles: ['student', 'instructor', 'president', 'staff'] },
+  { label: 'Update Profile', href: '/dashboard/profile-update', roles: ['staff'] },
 ];
 
 export default function Sidebar() {

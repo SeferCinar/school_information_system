@@ -1,36 +1,226 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Student Information System (OBS)
 
-## Getting Started
+A comprehensive web-based Student Information System built with Next.js, MongoDB, and TypeScript. This system manages course enrollment, exam scheduling, grade entry, and academic records for students, lecturers, and administrative staff.
 
-First, run the development server:
+## 🎯 Project Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+This is a role-based academic management system that supports four user roles:
+- **Student**: Enroll in courses, view exams, check transcripts and schedules
+- **Instructor/Lecturer**: Create exams, enter grades, view enrolled students
+- **President/Head Lecturer**: Full administrative access including grade overrides
+- **Staff**: View students and update profile information
+
+## 🚀 Features
+
+### Authentication & Authorization
+- Role-based authentication system
+- Protected routes based on user roles
+- Session management with localStorage
+
+### Course Management
+- Course CRUD operations (Head Lecturer)
+- Course listing with search and filters
+- Course selection for students with business rule validation:
+  - Credit limit check (max 45 ECTS)
+  - Quota validation
+  - Prerequisite verification
+
+### Exam Management
+- Create exams with type, percentage, date, time, and duration
+- View exams for enrolled/taught courses
+- Exam list with course details and time information
+
+### Grade Management
+- Grade entry form for lecturers
+- Automatic letter grade calculation (AA, BA, BB, CB, CC, DC, DD, FF)
+- GPA calculation (4.0 scale, weighted by ECTS)
+- Grade override capability for Head Lecturer
+- Timestamp tracking for all grade operations
+
+### Academic Records
+- Student transcript view (grouped by semesters)
+- Semester and overall GPA calculation
+- Course schedule viewing (weekly grid layout)
+
+### User Management
+- Profile viewing for all users
+- Student details for students
+- Profile update for staff members
+- Student list for instructors and administrators
+
+## 🛠️ Technology Stack
+
+- **Frontend**: Next.js 16, React, TypeScript
+- **Styling**: Tailwind CSS
+- **Database**: MongoDB with Mongoose
+- **Authentication**: Custom AuthContext with role-based access
+- **State Management**: React Context API
+
+## 📁 Project Structure
+
+```
+school_information_system/
+├── app/                    # Next.js app router pages
+│   ├── (auth)/            # Authentication pages
+│   └── dashboard/         # Protected dashboard pages
+├── components/            # React components
+├── models/               # MongoDB Mongoose models
+├── actions/              # Server actions
+├── context/              # React context providers
+├── services/             # Business logic services
+├── lib/                  # Utility functions
+└── types/                # TypeScript type definitions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🗄️ Database Models
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **User**: Authentication and role information
+- **Student**: Student records with enrolled courses and GPA
+- **Lecturer**: Academic staff information
+- **Staff_Member**: Administrative staff
+- **Lecture**: Course information
+- **Enrolment**: Student-course enrollment records
+- **Exam**: Exam definitions with time and duration
+- **Grade**: Student grades with exam scores and letter grades
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔐 User Roles & Permissions
 
-## Learn More
+### Student
+- View enrolled courses
+- Select courses (with validation)
+- View exams for enrolled courses
+- View transcript and GPA
+- View weekly schedule
 
-To learn more about Next.js, take a look at the following resources:
+### Instructor/Lecturer
+- View taught courses
+- Create exams
+- Enter grades for enrolled students
+- View exams for taught courses
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### President/Head Lecturer
+- All instructor permissions
+- Create and manage courses
+- Edit any student's grades (override)
+- View all students
+- Full system access
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Staff
+- View all students
+- Update own profile
+- View profile information
 
-## Deploy on Vercel
+## 🚦 Getting Started
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Prerequisites
+- Node.js 18+ 
+- MongoDB (local or cloud instance)
+- npm or yarn
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd school_information_system
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables:
+Create a `.env.local` file:
+```env
+MONGODB_URI=mongodb://localhost:27017/SIS_DB
+MONGODB_URL=mongodb://localhost:27017/SIS_DB
+```
+
+4. Run the development server:
+```bash
+npm run dev
+```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## 📝 Business Rules
+
+### Course Selection
+- Maximum 45 ECTS credits per semester
+- Cannot exceed course quota
+- Must have passed prerequisite courses
+- Prerequisites checked against `lecture_catalog`
+
+### Grade Calculation
+- Letter grades calculated from weighted exam scores
+- Exam percentages can be customized (e.g., Midterm 40%, Final 60%)
+- GPA calculated on 4.0 scale:
+  - AA = 4.0, BA = 3.5, BB = 3.0, CB = 2.5, CC = 2.0, DC = 1.5, DD = 1.0, FF = 0.0
+- Passing grades (DD or better) automatically added to `lecture_catalog`
+
+### Exam Management
+- Each exam must have unique type per course/semester
+- Total exam percentages can exceed 100% (warning shown)
+- Exam dates must be in the future
+- Time and duration required for scheduling
+
+## 🎨 UI Features
+
+- Responsive design with Tailwind CSS
+- Loading states for async operations
+- Error messages with clear feedback
+- Search and filter capabilities
+- Inline editing where appropriate
+- Role-based navigation sidebar
+
+## 📚 Key Pages
+
+- `/login` - User authentication
+- `/dashboard` - Main dashboard
+- `/dashboard/courses` - My Courses (students/instructors)
+- `/dashboard/course-selection` - Course enrollment (students)
+- `/dashboard/manage-courses` - Course management (instructors/presidents)
+- `/dashboard/exams` - Exam creation (instructors/presidents)
+- `/dashboard/exams-list` - View exams (students/instructors/presidents)
+- `/dashboard/grades` - Grade entry (instructors/presidents)
+- `/dashboard/edit-grades` - Grade override (presidents only)
+- `/dashboard/transcript` - Academic transcript (students)
+- `/dashboard/schedule` - Weekly schedule (students)
+- `/dashboard/students` - Student list (instructors/presidents/staff)
+- `/dashboard/profile` - User profile
+- `/dashboard/profile-update` - Profile update (staff)
+
+## 🔧 Development
+
+### Server Actions
+All database operations are implemented as Next.js server actions in the `actions/` directory:
+- `authActions.ts` - Authentication
+- `courseActions.ts` - Course management
+- `studentActions.ts` - Student operations
+- `examActions.ts` - Exam management
+- `gradeActions.ts` - Grade operations
+
+### Models
+MongoDB models are defined in `models/` using Mongoose schemas.
+
+## 📄 License
+
+This project is part of an academic assignment.
+
+## 👥 Authors
+
+- Sefer Çınar (231805048)
+- İpek Nezihe Can (241805122)
+- Refia Nur Şenyiğit (231805065)
+
+## 📖 Documentation
+
+For detailed development logs, see:
+- `SPRINT_1.md` - Sprint 1 development log
+- `SPRINT_2.md` - Sprint 2 development log
+- `SPRINT_3.md` - Sprint 3 development log
+
+---
+
+**Note**: This is an academic project. Ensure MongoDB is running and properly configured before starting the application.
