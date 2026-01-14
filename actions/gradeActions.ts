@@ -6,6 +6,16 @@ import Exam from '@/models/Exam';
 import Student from '@/models/Student';
 import Lecture from '@/models/Lecture';
 import { revalidatePath } from 'next/cache';
+import { calculateLetterGrade as calcLetterGrade, calculateGPA as calcGPA } from '@/lib/gradeCalculations';
+
+// Re-export the pure functions as async for server actions compatibility
+export async function calculateLetterGrade(examScores: Record<string, number>, examPercentages: Record<string, number>): Promise<string> {
+  return calcLetterGrade(examScores, examPercentages);
+}
+
+export async function calculateGPA(grades: Array<{ letter_grade: string; akts: number }>): Promise<number> {
+  return calcGPA(grades);
+}
 
 // Helper function to convert Mongoose Map to plain object
 function convertExamScores(examScores: any): Record<string, number> {
@@ -32,59 +42,6 @@ function convertExamScores(examScores: any): Record<string, number> {
   }
   
   return {};
-}
-
-// Letter grade calculation based on weighted average
-// Midterm 40% + Final 60% (or based on exam percentages)
-export async function calculateLetterGrade(examScores: Record<string, number>, examPercentages: Record<string, number>): Promise<string> {
-  let totalWeightedScore = 0;
-  let totalWeight = 0;
-
-  for (const [examType, score] of Object.entries(examScores)) {
-    const percentage = examPercentages[examType] || 0;
-    totalWeightedScore += score * (percentage / 100);
-    totalWeight += percentage / 100;
-  }
-
-  if (totalWeight === 0) return 'FF';
-
-  const finalScore = totalWeightedScore / totalWeight;
-
-  // Turkish grading system
-  if (finalScore >= 90) return 'AA';
-  if (finalScore >= 85) return 'BA';
-  if (finalScore >= 80) return 'BB';
-  if (finalScore >= 75) return 'CB';
-  if (finalScore >= 70) return 'CC';
-  if (finalScore >= 65) return 'DC';
-  if (finalScore >= 60) return 'DD';
-  return 'FF';
-}
-
-// GPA calculation (4.0 scale)
-export async function calculateGPA(grades: Array<{ letter_grade: string; akts: number }>): Promise<number> {
-  const gradePoints: Record<string, number> = {
-    'AA': 4.0,
-    'BA': 3.5,
-    'BB': 3.0,
-    'CB': 2.5,
-    'CC': 2.0,
-    'DC': 1.5,
-    'DD': 1.0,
-    'FF': 0.0,
-  };
-
-  let totalPoints = 0;
-  let totalCredits = 0;
-
-  for (const grade of grades) {
-    const points = gradePoints[grade.letter_grade] || 0;
-    const credits = grade.akts || 0;
-    totalPoints += points * credits;
-    totalCredits += credits;
-  }
-
-  return totalCredits > 0 ? totalPoints / totalCredits : 0;
 }
 
 // Get grades for a specific course and semester
@@ -151,7 +108,7 @@ export async function saveGrades(params: {
       }
 
       // Calculate letter grade
-      const letterGrade = await calculateLetterGrade(exam_scores, examPercentages);
+      const letterGrade = calcLetterGrade(exam_scores, examPercentages);
 
       // Upsert grade
       const grade = await Grade.findOneAndUpdate(
@@ -195,7 +152,7 @@ export async function saveGrades(params: {
           akts: courseMap.get(g.lecture_code)?.akts || 0,
         }));
 
-      const newGPA = await calculateGPA(gradesWithCredits);
+      const newGPA = calcGPA(gradesWithCredits);
       await Student.updateOne({ student_no }, { $set: { gpa: newGPA } });
 
       results.push({
@@ -248,7 +205,7 @@ export async function updateGrade(params: {
       });
 
       updateObj.exam_scores = new Map(Object.entries(exam_scores));
-      updateObj.letter_grade = await calculateLetterGrade(exam_scores, examPercentages);
+      updateObj.letter_grade = calcLetterGrade(exam_scores, examPercentages);
     } else if (letter_grade) {
       updateObj.letter_grade = letter_grade;
     }
@@ -268,7 +225,7 @@ export async function updateGrade(params: {
         akts: courseMap.get(g.lecture_code)?.akts || 0,
       }));
 
-    const newGPA = calculateGPA(gradesWithCredits);
+    const newGPA = calcGPA(gradesWithCredits);
     await Student.updateOne({ student_no: grade.student_no }, { $set: { gpa: newGPA } });
 
     revalidatePath('/dashboard/grades');
