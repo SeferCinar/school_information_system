@@ -133,7 +133,7 @@ npm install
 3. Set up environment variables:
 Create a `.env.local` file:
 ```env
-MONGODB_URI=mongodb://localhost:27017/SIS_DB
+MONGODB_URL=mongodb://localhost:27017/SIS_DB
 MONGODB_URL=mongodb://localhost:27017/SIS_DB
 ```
 

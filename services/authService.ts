@@ -10,7 +10,7 @@ export const loginUser = async (
 ): Promise<User | null> => {
   try {
     // 1. Connect to SIS_DB explicitly
-    const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/SIS_DB';
+    const MONGODB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017/SIS_DB';
     
     // Clear any existing connection
     if (mongoose.connection.readyState !== 0) {
@@ -18,7 +18,7 @@ export const loginUser = async (
     }
     
     // Connect with explicit options
-    await mongoose.connect(MONGODB_URI, {
+    await mongoose.connect(MONGODB_URL, {
       dbName: 'SIS_DB',
       serverSelectionTimeoutMS: 5000
     });
